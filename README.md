@@ -72,7 +72,7 @@ This project provides a document query interface using Streamlit, Llama Index, a
 ```
 my_app/
 ├── data/ # Directory for storing documents
-│ └── (your documents here)
+│ └── (Save your documents here)
 ├── storage/ # Directory for storing vectorized index (ignored by git)
 ├── app.py # Main Streamlit application file
 ├── utils.py # Utility functions
