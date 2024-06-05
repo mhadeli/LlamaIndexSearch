@@ -69,6 +69,7 @@ This project provides a document query interface using Streamlit, Llama Index, a
 
 ## Project Structure
 
+```
 my_app/
 ├── data/ # Directory for storing documents
 │ └── (your documents here)
@@ -77,7 +78,7 @@ my_app/
 ├── utils.py # Utility functions
 ├── requirements.txt # List of required packages
 └── .env # Environment variables (ignored by git)
-
+```
 
 ## Contributing
 
