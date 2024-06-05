@@ -4,6 +4,7 @@ This project provides a document query interface using Streamlit, Llama Index, a
 
 ## Table of Contents
 
+- [How It Works](#How It Works)
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -11,6 +12,77 @@ This project provides a document query interface using Streamlit, Llama Index, a
 - [Project Structure](#project-structure)
 - [Contributing](#contributing)
 - [License](#license)
+
+## How It Works
+
+This application provides a user-friendly interface for querying a collection of documents using natural language. Here’s a step-by-step guide on how the app works:
+
+1. **Document Loading and Index Creation:**
+
+    - The application starts by checking if a persistent storage directory (`storage/`) exists.
+    - If the storage directory does not exist, it loads documents from the `data/` directory using `SimpleDirectoryReader`.
+    - It then creates a vectorized index from these documents using `VectorStoreIndex`.
+    - The created index is saved in the `storage/` directory for future use.
+    - If the storage directory already exists, the application loads the existing index from this directory using `StorageContext`.
+
+2. **Setting Up the Query Engine:**
+
+    - The application sets up a retriever (`VectorIndexRetriever`) to fetch the most relevant documents based on similarity.
+    - A postprocessor (`SimilarityPostprocessor`) is used to filter the results based on a similarity cutoff.
+    - The `RetrieverQueryEngine` is initialized with the retriever and postprocessor to handle the querying process.
+
+3. **User Interaction via Streamlit:**
+
+    - The application uses Streamlit to provide a web-based interface.
+    - Users enter their query in the input field provided on the Streamlit app.
+    - Upon clicking the "Submit" button, the application processes the query using the query engine.
+    - The results are displayed on the Streamlit interface, showing both the response and the sources.
+
+4. **Detailed Steps in the Code:**
+
+    - **Loading Environment Variables:**
+      ```python
+      load_dotenv()
+      OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+      os.environ['OPENAI_API_KEY'] = OPENAI_API_KEY
+      ```
+
+    - **Creating or Loading the Index:**
+      ```python
+      if not os.path.exists(PERSIST_DIR):
+          documents = SimpleDirectoryReader("data").load_data()
+          index = VectorStoreIndex.from_documents(documents, show_progress=True)
+          index.storage_context.persist(persist_dir=PERSIST_DIR)
+      else:
+          storage_context = StorageContext.from_defaults(persist_dir=PERSIST_DIR)
+          index = load_index_from_storage(storage_context)
+      ```
+
+    - **Setting Up the Query Engine:**
+      ```python
+      retriever = VectorIndexRetriever(index=index, similarity_top_k=4)
+      postprocessor = SimilarityPostprocessor(similarity_cutoff=0.80)
+      query_engine = RetrieverQueryEngine(retriever=retriever, node_postprocessors=[postprocessor])
+      ```
+
+    - **Streamlit Interface:**
+      ```python
+      st.title("Document Query Interface")
+
+      query = st.text_input("Enter your query:", "")
+
+      if st.button("Submit"):
+          if query:
+              response = query_engine.query(query)
+              st.write("### Response")
+              st.write(response)
+              st.write("### Sources")
+              st.write(pprint_response(response, show_source=True))
+          else:
+              st.error("Please enter a query.")
+      ```
+
+This application leverages the power of vectorized search and natural language processing to provide efficient and accurate document retrieval, all wrapped in a simple and intuitive web interface.
 
 ## Features
 
