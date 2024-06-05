@@ -4,7 +4,7 @@ This project provides a document query interface using Streamlit, Llama Index, a
 
 ## Table of Contents
 
-- [How It Works](#How It Works)
+- [How It Works](#how-it-works)
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
